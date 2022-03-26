@@ -1,0 +1,16 @@
+{
+  "name": "ytlinksearcher",
+  "version": "1.0.0",
+  "description": "youtube link searcher",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "wschneider",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
+    "eslint": "^8.12.0"
+  }
+}
