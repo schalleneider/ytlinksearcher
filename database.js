@@ -10,8 +10,13 @@ class Database {
     static COLUMN_ARTIST_INDEX = 3;
     static COLUMN_ANIME_INDEX = 4;
 
-    static COLUMN_LINK_INDEX = 6;
-    static COLUMN_DURATION_INDEX = 7;
+    static COLUMN_RANK_LINK_INDEX = 6;
+    static COLUMN_RANK_DURATION_INDEX = 7;
+    static COLUMN_RANK_VIEWS_INDEX = 8;
+
+    static COLUMN_FIRST_LINK_INDEX = 9;
+    static COLUMN_FIRST_DURATION_INDEX = 10;
+    static COLUMN_FIRST_VIEWS_INDEX = 11;
 
     constructor(path) {
         this.path = path;

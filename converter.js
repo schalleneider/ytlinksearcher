@@ -1,6 +1,6 @@
 import moment from 'moment'; 
 
-class Helper {
+class Converter {
 
     static convertISO8601ToSeconds(input) {
         var duration = moment.duration(input, moment.ISO_8601);
@@ -8,4 +8,4 @@ class Helper {
     }
 }
 
-export { Helper };
+export { Converter };

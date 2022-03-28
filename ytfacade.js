@@ -1,6 +1,6 @@
 import { google } from 'googleapis';
 
-import { Helper } from './helper.js';
+import { Converter } from './converter.js';
 import { Log } from './log.js';
 
 // initialize the Youtube API library
@@ -11,6 +11,7 @@ class YTFacade {
     static async Auth() {
         const auth = new google.auth.GoogleAuth({
             keyFile: 'auth/ytlinksearcher-robot.json',
+            //keyFile: 'auth/ytlinksearcher2-robot.json',
             scopes: [
                 'https://www.googleapis.com/auth/cloud-platform',
                 'https://www.googleapis.com/auth/youtube'
@@ -25,7 +26,7 @@ class YTFacade {
     
         const searchListParams = {
             part: 'id,snippet',
-            order: 'viewCount',
+            order: 'relevance',
             type: 'video',
             q: searchInfo.music + ' ' + searchInfo.artist,
         };
@@ -102,9 +103,10 @@ class YTFacade {
                             description: currentSearchInfo.description,
                             licensed: current.contentDetails.licensedContent,
                             duration: current.contentDetails.duration,
-                            durationSeconds: Helper.convertISO8601ToSeconds(current.contentDetails.duration),
+                            durationSeconds: Converter.convertISO8601ToSeconds(current.contentDetails.duration),
                             views: current.statistics.viewCount,
                             likes: current.statistics.likeCount,
+                            first: index === 0,
                             rank: 0
                         };
 
@@ -126,18 +128,30 @@ class YTFacade {
 
     static Rank(searchInfo, detailInfo) {
 
+        let lengthLowerThreshold = 120;
+        let lengthUpperThreshold = 480;
+
         let finalRank = detailInfo.rank;
 
-        // overranks licensed videos
-        if (detailInfo.licensed === true) {
+        // overranks licensed videos 
+        if (detailInfo.licensed === true && 
+            detailInfo.durationSeconds >= lengthLowerThreshold && 
+            detailInfo.durationSeconds <= lengthUpperThreshold && 
+            detailInfo.views >= 100000) {
             finalRank += 5;
         }
         
-        // ranks videos over 100 seconds and underanks short videos
-        if (detailInfo.durationSeconds >= 100) {
+        // ranks videos over threshold and underanks short videos
+        if (detailInfo.durationSeconds >= lengthLowerThreshold && 
+            detailInfo.durationSeconds <= lengthUpperThreshold) {
             finalRank += 1;
         } else {
             finalRank -= 5;
+        }
+
+        // ransks first video
+        if (detailInfo.first) {
+            finalRank += 1;
         }
 
         // ranks videos over 100K views
@@ -151,12 +165,8 @@ class YTFacade {
         }
 
         // ranks videos with artist / music on title or 
-        if (detailInfo.title.search(new RegExp(searchInfo.music, "i")) != -1 || detailInfo.title.search(new RegExp(searchInfo.artist, "i")) != -1) {
-            finalRank += 1;
-        }
-        
-        // ranks videos with artist on title
-        if (detailInfo.title.search(new RegExp(searchInfo.artist, "i")) != -1) {
+        if (detailInfo.title.search(new RegExp(searchInfo.music, "i")) != -1 || 
+            detailInfo.title.search(new RegExp(searchInfo.artist, "i")) != -1) {
             finalRank += 1;
         }
 
@@ -168,6 +178,11 @@ class YTFacade {
         // down-ranks videos with SHORT on title / description
         if (detailInfo.title.search(new RegExp("SHORT", "i")) != -1) {
             finalRank -= 1;
+        }
+
+        // down-ranks videos with SHORT on title / description
+        if (detailInfo.title.search(new RegExp("COVER", "i")) != -1) {
+            finalRank -= 5;
         }
 
         return finalRank;

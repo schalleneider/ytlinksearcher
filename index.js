@@ -40,6 +40,9 @@ async function main() {
 
             if (videoDetails) {
 
+                let chosenViews = videoDetails[0];
+                let chosenViewsID = videoDetails[0].id;
+
                 // sort videos by its rank and then by view count
                 videoDetails.sort((first, second) => {
                     if (first.rank === second.rank) {
@@ -48,14 +51,21 @@ async function main() {
                     return second.rank - first.rank;
                 })
 
-                Log.debugVideoDetails(videoDetails);
-
-                var chosen = videoDetails[0];
+                let chosenRank = videoDetails[0];
+                let chosenRankID = videoDetails[0].id;
                 
-                Log.info(`chosed video: [ id: ${chosen.id}, duration: ${chosen.durationSeconds}, views: ${chosen.views}, licensed: ${chosen.licensed}, rank: ${chosen.rank} ]`);
+                Log.debugVideoDetails(videoDetails, [chosenViewsID, chosenRankID]);
 
-                row.getCell(Database.COLUMN_LINK_INDEX).value = `https://www.youtube.com/watch?v=${chosen.id}`;
-                row.getCell(Database.COLUMN_DURATION_INDEX).value = chosen.duration;
+                Log.info(`chosed rank video: [ id: ${chosenRank.id}, duration: ${chosenRank.durationSeconds}, views: ${chosenRank.views}, licensed: ${chosenRank.licensed}, rank: ${chosenRank.rank} ]`);
+                Log.info(`chosed view video: [ id: ${chosenViews.id}, duration: ${chosenViews.durationSeconds}, views: ${chosenViews.views}, licensed: ${chosenViews.licensed}, rank: ${chosenViews.rank} ]`);
+
+                row.getCell(Database.COLUMN_RANK_LINK_INDEX).value = `https://www.youtube.com/watch?v=${chosenRank.id}`;
+                row.getCell(Database.COLUMN_RANK_DURATION_INDEX).value = chosenRank.duration;
+                row.getCell(Database.COLUMN_RANK_VIEWS_INDEX).value = chosenRank.views;
+
+                row.getCell(Database.COLUMN_FIRST_LINK_INDEX).value = `https://www.youtube.com/watch?v=${chosenViews.id}`;
+                row.getCell(Database.COLUMN_FIRST_DURATION_INDEX).value = chosenViews.duration;
+                row.getCell(Database.COLUMN_FIRST_VIEWS_INDEX).value = chosenViews.views;
             }
         }
     }

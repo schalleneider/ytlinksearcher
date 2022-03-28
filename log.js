@@ -1,5 +1,4 @@
 import log4js from 'log4js';
-import chalk from 'chalk';
 
 class Log {
 
@@ -8,10 +7,13 @@ class Log {
         log4js.configure({
             appenders: {
                 console: { type: 'stdout', layout: { type: 'coloured' } },
-                everything: { type: 'file', filename: 'logs/logs.txt', encoding: 'UTF-8' }
+                data: { type: 'file', filename: 'logs/data.txt', encoding: 'UTF-8' },
+                errors: { type: 'file', filename: 'logs/errors.txt', encoding: 'UTF-8' },
+                datafilter: { type: 'logLevelFilter', appender: 'data', level: 'trace', maxLevel: 'warn' },
+                errorsfilter: { type: 'logLevelFilter', appender: 'errors', level: 'error', maxLevel: 'fatal' }
             },
             categories: {
-                default: { appenders: [ 'console', 'everything' ], level: 'trace' }
+                default: { appenders: [ 'console', 'datafilter', 'errorsfilter' ], level: 'trace' }
             }
         });
 
@@ -31,8 +33,8 @@ class Log {
     }
     
     // yellow
-    static warning(text) {
-        Log.instance.logger.warning(text);
+    static warn(text) {
+        Log.instance.logger.warn(text);
     }
 
     // red
@@ -55,11 +57,11 @@ class Log {
         Log.instance.logger.trace(text);
     }
 
-    static debugVideoDetails(videoDetails) {
+    static debugVideoDetails(videoDetails, choosenIdList) {
         for (let index = 0; index < videoDetails.length; index++) {
             const current = videoDetails[index];
             let text = `{ id: ${current.id}, duration: ${current.durationSeconds}, views: ${current.views}, licensed: ${current.licensed}, rank: ${current.rank} }`; 
-            index === 0 ? this.debug(text) : this.trace(text);
+            choosenIdList.some(item => item.id === current.id) ? this.debug(text) : this.trace(text);
         }
     }
 }
