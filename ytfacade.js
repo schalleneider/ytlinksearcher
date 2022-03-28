@@ -62,6 +62,11 @@ class YTFacade {
     }
     
     static async VideoDetails(searchInfo, searchResults) {
+        
+        if (!searchResults) {
+            return null;
+        }
+        
         Log.info(`listing video details for: [${searchInfo.id} : ${searchInfo.music} ${searchInfo.artist}]`);
     
         let videoIdList = [];

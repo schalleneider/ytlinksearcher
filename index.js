@@ -38,22 +38,25 @@ async function main() {
             let searchResults = await YTFacade.Search(searchInfo);
             let videoDetails = await YTFacade.VideoDetails(searchInfo, searchResults);
 
-            // sort videos by its rank and then by view count
-            videoDetails.sort((first, second) => {
-                if (first.rank === second.rank) {
-                    return second.views - first.views;
-                }
-                return second.rank - first.rank;
-            })
+            if (videoDetails) {
 
-            Log.debugVideoDetails(videoDetails);
+                // sort videos by its rank and then by view count
+                videoDetails.sort((first, second) => {
+                    if (first.rank === second.rank) {
+                        return second.views - first.views;
+                    }
+                    return second.rank - first.rank;
+                })
 
-            var chosen = videoDetails[0];
-            
-            Log.info(`chosed video: [ id: ${chosen.id}, duration: ${chosen.durationSeconds}, views: ${chosen.views}, licensed: ${chosen.licensed}, rank: ${chosen.rank} ]`);
+                Log.debugVideoDetails(videoDetails);
 
-            row.getCell(Database.COLUMN_LINK_INDEX).value = `https://www.youtube.com/watch?v=${chosen.id}`;
-            row.getCell(Database.COLUMN_DURATION_INDEX).value = chosen.duration;
+                var chosen = videoDetails[0];
+                
+                Log.info(`chosed video: [ id: ${chosen.id}, duration: ${chosen.durationSeconds}, views: ${chosen.views}, licensed: ${chosen.licensed}, rank: ${chosen.rank} ]`);
+
+                row.getCell(Database.COLUMN_LINK_INDEX).value = `https://www.youtube.com/watch?v=${chosen.id}`;
+                row.getCell(Database.COLUMN_DURATION_INDEX).value = chosen.duration;
+            }
         }
     }
 
