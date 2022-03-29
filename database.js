@@ -1,5 +1,6 @@
 import path from 'path';
 import exceljs from 'exceljs';
+import moment from 'moment';
 
 import { Log } from './log.js';
 
@@ -36,7 +37,8 @@ class Database {
     }
     
     async saveWorksheet() {
-        let destinationPath = `${path.dirname(this.path)}${path.sep}${path.basename(this.path, path.extname(this.path))}_processed${path.extname(this.path)}`;
+        let datepart = moment(new Date()).format('YYYYMMDD_HHmmss');
+        let destinationPath = `${path.dirname(this.path)}${path.sep}${path.basename(this.path, path.extname(this.path))}_${datepart}${path.extname(this.path)}`;
         Log.info(`saving database: [${destinationPath}]`);
         await this.workbook.xlsx.writeFile(destinationPath);
     }

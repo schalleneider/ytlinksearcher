@@ -10,8 +10,7 @@ class YTFacade {
 
     static async Auth() {
         const auth = new google.auth.GoogleAuth({
-            keyFile: 'auth/ytlinksearcher-robot.json',
-            //keyFile: 'auth/ytlinksearcher2-robot.json',
+            keyFile: 'auth/sakura-robot01.json',
             scopes: [
                 'https://www.googleapis.com/auth/cloud-platform',
                 'https://www.googleapis.com/auth/youtube'

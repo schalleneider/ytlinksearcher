@@ -5,6 +5,7 @@
   "type": "module",
   "exports": "./index.js",
   "scripts": {
+    "start": "node index.js",
     "start:example": "node index.js --database='database/example.xlsx'",
     "start:debug": "node index.js --database='database/debug.xlsx'"
   },
